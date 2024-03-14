@@ -1,24 +1,23 @@
 const mongoose = require("mongoose");
 
 const canteenSchema = mongoose.Schema({
-
-    username : {
-        type : String,
-        required : true,
+    canteenName: {
+        type: String,
+        required: true,
     },
-    email : {
-        type : String,
-        required : true,
+    canteenImage: {
+        type: String,
+        requried: false,
     },
-    password : {
-        type : String,
-        requried : true,
+    canteenDescription: {
+        type: String,
+        requried: true,
     },
-    menu : {
-        type : Buffer,
-        contentType : String,
+    canteenLocation: {
+        type: String,
+        requried: true,
     }
 });
 
-const Canteens = mongoose.model("Canteens", canteenSchema);
-module.exports = Canteens;
+const canteen = mongoose.model("canteen", canteenSchema);
+module.exports = canteen;

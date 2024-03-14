@@ -1,53 +1,46 @@
 const express = require('express');
 const router = express.Router();
-const session = require('express-session');
-const User = require("../models/User");
-const goth = require("../models/goth")
-const bcrypt = require("bcrypt");
-const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+const passport = require('passport');
+require('dotenv').config();
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
-router.use(session({
-    secret: 'fstiwrhsb', 
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: true, 
-        httpOnly: true, 
-        maxAge: 24 * 60 * 60 * 1000 
+passport.use(new GoogleStrategy({
+    clientID: '472353109993-gjg126553g4he0fe7gs5ajepuoqpekv4.apps.googleusercontent.com',
+    clientSecret: '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',
+    callbackURL: '/auth/google/callback'
+}, async function(accessToken, refreshToken, profile, done) {
+    try {
+        let existingUser = await goth.findOne({ email : profile.emails[0].value });
+
+        if (existingUser) {
+            return done(null, existingUser);
+        } else {
+            const newUser = new goth({
+                googleId: profile.id,
+                userName: profile.displayName, 
+                displayName: profile.displayName,
+                email: profile.emails[0].value
+            });
+            await newUser.save();
+            return done(null, newUser);
+        }
+    } catch (err) {
+        return done(err);
     }
 }));
 
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
 
-passport.use(new GoogleStrategy({
-  clientID: '472353109993-bvebi129jggs6rbcmfru3mel9ufnrknf.apps.googleusercontent.com',
-  clientSecret: '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',
-  callbackURL: '/auth/google/callback'
-}, async function(accessToken, refreshToken, profile, done) {
-  try {
-      // Check if a user with the same Google ID already exists
-      let existingUser = await goth.findOne({ email : profile.emails[0].value });
-
-      if (existingUser) {
-          // Redirect the existing user to the login page
-          return done(null, existingUser);
-      } else {
-          // Create a new user with profile data
-          const newUser = new goth({
-              googleId: profile.id,
-              userName: profile.displayName, // You can change this according to your requirements
-              displayName: profile.displayName,
-              email: profile.emails[0].value
-          });
-          await newUser.save();
-          return done(null, newUser);
-      }
-  } catch (err) {
-      return done(err);
-  }
-}));
-
-
+passport.deserializeUser((id, done) => {
+    goth.findById(id, (err, user) => {
+        done(err, user);
+    });
+});
 
 router.post('/register',async (req, res) => {
     console.log("Register Route accessed");
@@ -88,68 +81,55 @@ router.post('/register',async (req, res) => {
     }
 });
 
-router.post("/login", async (req, res) => {
-    console.log("Login Route accessed");
-
-    const { email, password } = req.body;
-    console.log("Received login request with email:", email);
-
-    if (!email || !password) {
-        console.log("Invalid request body: Missing email or password");
-        return res.status(400).json({ error: "Invalid request body" });
-    }
-
+// Login route for local authentication
+router.post('/login', async (req, res) => {
     try {
-        const user = await User.findOne({ email: email.trim() });
+        const { email, password } = req.body;
+
+        // Check if email and password are provided
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+
+        // Find user by email
+        const user = await User.findOne({ email });
+
+        // If user doesn't exist, return error
         if (!user) {
-            console.log("User not found with email:", email);
-            return res.status(401).json({ error: "Invalid email or password" });
+            return res.status(401).json({ error: 'Invalid email or password' });
         }
 
-        const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) {
-            console.log("Invalid password for email:", email);
-            return res.status(401).json({ error: "Invalid email or password" });
+        // Compare passwords
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        // If passwords don't match, return error
+        if (!passwordMatch) {
+            return res.status(401).json({ error: 'Invalid email or password' });
         }
 
-        // Set session data
-        req.session.user = user;
+        // Generate JWT token
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '5d' });
 
-        // Log session token info
-        console.log("Session ID:", req.sessionID);
-        console.log("Session Data:", req.session);
-
-        // If username and password are valid, return success
-        console.log("Login successful for email:", email);
-        return res.status(200).json({ message: "Login successful" });
+        // Send token in response
+        return res.status(200).json({ token });
     } catch (error) {
-        console.error("Error in login route:", error);
-        return res.status(500).json({ error: "Internal Server Error" });
+        console.error('Error in login route:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
-});
-
-router.get("/home", (req, res) => {
-    // Check if user is logged in (session contains user data)
-    if (req.session.user) {
-        return res.render("home", { user: req.session.user });
-    }
-    const redirectUrl = 'http://localhost:3000/home'; // Adjust the port as needed
-    res.redirect(redirectUrl);
 });
 
 // OAuth2 authentication route
 router.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] })
+    passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
-router.get('/auth/google/callback', 
-  passport.authenticate('google', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication, redirect to home page
-    const redirectUrl = 'http://localhost:3000/home'; // Adjust the port as needed
-    res.redirect(redirectUrl);
-  }
+router.get('/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    function (req, res) {
+        // Successful authentication, redirect to home page
+        const redirectUrl = 'http://localhost:3000/home';
+        res.redirect(redirectUrl);
+    }
 );
-
 
 module.exports = router;

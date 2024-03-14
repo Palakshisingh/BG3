@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
-import HomePage from './components/HomePage'
-import RegisterPage from './components/RegisterPage'
-import LoginPage from './components/LoginPage';
-import PaymentSuccess from './components/success';
+import HomePage from './pages/HomePage'
+import RegisterPage from './pages/RegisterPage'
+import LoginPage from './pages/LoginPage';
+import CanteenPage from './pages/CanteenPage';
+import OwnerPage from './pages/ownerPage';
+import OwnerReg from './pages/ownerReg';
+import OwnerMenu from './pages/OwnerMenu';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -15,7 +18,10 @@ root.render(
         <Route path='' element={<RegisterPage />}/>
         <Route path='login' element={<LoginPage />}/>
         <Route path='home' element={<HomePage />}/>
-        <Route path="success" element={<PaymentSuccess />} />
+        <Route path='canteen' element={<CanteenPage/>}/>
+        <Route path='ownerU' element={<OwnerPage/>}/>
+        <Route path='ownerR' element={<OwnerReg/>}/>
+        <Route path='ownerM' element={<OwnerMenu/>}/>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

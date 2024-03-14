@@ -9,11 +9,14 @@ const cors = require("cors");
 const path = require("path");
 const app = express();
 const User = require("./models/User");
-const auth = require('./routes/auth')
+const auth = require('./routes/auth');
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(cors());
 app.use(session({ secret: 'fstiwrhsb', resave: false, saveUninitialized: false }));
 app.use('/register', auth);
+app.use('/ownerPost',auth);
 // Initialize Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());

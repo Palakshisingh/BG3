@@ -1,5 +1,5 @@
-import logo from './logo.svg';
-import './App.css';
+import react from "react";
+import Header from "./components/common/header/header";
 
 function App() {
   return (
