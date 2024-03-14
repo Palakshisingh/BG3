@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Menu = require("../models/menu");
 // const protectRoute = require("../middleware/isAuth");
-
+//route for owner to upload the menu to the db.
 router.post("/menuUpload",async (req, res) => {
     try {
         const { ItemName, ItemPrice, ItemQuantity, ItemImage } = req.body;

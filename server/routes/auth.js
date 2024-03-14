@@ -4,20 +4,22 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const passport = require('passport');
-require('dotenv').config();
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
+//passport set up for google authentication 
 passport.use(new GoogleStrategy({
-    clientID: '472353109993-gjg126553g4he0fe7gs5ajepuoqpekv4.apps.googleusercontent.com',
-    clientSecret: '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',
-    callbackURL: '/auth/google/callback'
-}, async function(accessToken, refreshToken, profile, done) {
-    try {
-        let existingUser = await goth.findOne({ email : profile.emails[0].value });
+    //client crendentials ......
 
+}, async function(accessToken, refreshToken, profile, done) {
+
+    try {
+        //find any user with provided data in g-auth users db then apply the following conditions.
+        let existingUser = await goth.findOne({ email : profile.emails[0].value });
+        
         if (existingUser) {
             return done(null, existingUser);
-        } else {
+        } 
+        else {
             const newUser = new goth({
                 googleId: profile.id,
                 userName: profile.displayName, 
@@ -27,95 +29,100 @@ passport.use(new GoogleStrategy({
             await newUser.save();
             return done(null, newUser);
         }
-    } catch (err) {
+    } 
+
+    catch (err) {
         return done(err);
     }
+
 }));
 
+//serialize passport - give unique id
 passport.serializeUser((user, done) => {
-    done(null, user.id);
+    done(null, user.id);//(err,info)
 });
 
+//retrieves info using unique id
 passport.deserializeUser((id, done) => {
     goth.findById(id, (err, user) => {
         done(err, user);
     });
 });
 
-router.post('/register',async (req, res) => {
-    console.log("Register Route accessed");
+// Signup route - local authentication
+router.post('/register', async (req, res) => {
 
     try {
+        //extract the request recieved from frontend into following variables.
         const { username, email, password } = req.body;
-        console.log("Request Body:", req.body);
 
+        // Checks if username, email and password are provided and if they are unique
         if (!username || !email || !password) {
-            console.log("Invalid request body");
-            return res.status(400).json({ error: "Invalid request body" });
+            return res.status(400).json({ error: 'Username, email, and password are required' });
         }
 
-        const existingUserByEmail = await User.findOne({ email: email.trim() });
-        const existingUserByUsername = await User.findOne({ username: username.trim() });
-
-        if (existingUserByEmail || existingUserByUsername) {
-            console.log("User with email or username already exists");
-            return res.status(409).json({ error: "A user with this email or username already exists" });
-        }
-        console.log("Creating a new user");
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUserDetails = {
-            userName: username, 
-            email,
-            password: hashedPassword,
-        };
-
-        const newUser = await User.create(newUserDetails);
-        console.log("New User Created:", newUser);
-
-        return res.status(200).json({ message: "User created successfully" });
+        const existingUser = await User.findOne({ email });
         
-    } catch (error) {
-        console.error("Error in route:", error);
-        return res.status(500).json({ error: "Internal Server Error" });
+        //old - reroute to login
+        if (existingUser) {
+            return res.status(409).json({ error: 'Email is already registered' });//409-conflict
+        }
+
+        //new - hash the password and store in db
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = new User({
+            username,
+            email,
+            password: hashedPassword
+        });
+        await newUser.save();
+
+        // generate token and send through response
+        const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, { expiresIn: '5d' });
+        return res.status(201).json({ token });
+
+    } 
+
+    catch (error) {
+        //any other error based on logic or internal error.
+        console.error('Error in signup route:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
+
 });
 
 // Login route for local authentication
 router.post('/login', async (req, res) => {
     try {
+        //recieved req has email and password - username caused issues with db.
         const { email, password } = req.body;
 
-        // Check if email and password are provided
         if (!email || !password) {
             return res.status(400).json({ error: 'Email and password are required' });
         }
 
-        // Find user by email
         const user = await User.findOne({ email });
 
-        // If user doesn't exist, return error
         if (!user) {
-            return res.status(401).json({ error: 'Invalid email or password' });
+            return res.status(401).json({ error: 'Invalid email or password' });//401-unauth
         }
 
-        // Compare passwords
+        //if email exists - compare passwords
         const passwordMatch = await bcrypt.compare(password, user.password);
 
-        // If passwords don't match, return error
         if (!passwordMatch) {
             return res.status(401).json({ error: 'Invalid email or password' });
         }
 
-        // Generate JWT token
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '5d' });
-
-        // Send token in response
         return res.status(200).json({ token });
-    } catch (error) {
+
+    } 
+    catch (error) {
         console.error('Error in login route:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
+
 });
 
 // OAuth2 authentication route
@@ -126,7 +133,6 @@ router.get('/auth/google',
 router.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
     function (req, res) {
-        // Successful authentication, redirect to home page
         const redirectUrl = 'http://localhost:3000/home';
         res.redirect(redirectUrl);
     }

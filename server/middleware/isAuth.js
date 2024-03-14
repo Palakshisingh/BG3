@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-
+//this middleware is triggered whenever the router -- endpoint with this as argument is reached.
+//checks if the user data --> cookie has tooken --> if yes --> check if valid --> if yes -->check if user exists. 
 const protectRoute = async (req, res) => {
     console.log("protectRoute accessed");
     try {

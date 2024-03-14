@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Canteen = require("../models/canteens");
 // const protectRoute = require("../middleware/isAuth");
-
+//route for owner to post canteen info to the db and register his canteen.
 router.post("/ownerPost",async (req, res) => {
     try {
         const { canteenName, canteenDescription, canteenLocation, canteenImage } = req.body;
