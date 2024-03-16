@@ -1,0 +1,72 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Angkor&display=swap');
+  *{
+    font-family: "Angkor", serif;
+    
+}
+/* antd override */
+input{
+  border-radius: 2px !important;
+  border: 1px solid rgba(128, 128, 128, 0.499) !important;
+  height: 40px !important;
+}
+input:focus{
+  outline: none;
+  box-shadow: none;
+  border: 1px solid gray;
+}
+label{
+  font-size: 16px;
+  color: black;
+}
+.ant-form-item{
+  margin: 10px;
+}
+/*Common styling */
+.card-title{
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.normal-text{
+  font-size: 1rem;
+}
+.card{
+  box-shadow: 0 0 2px gray;
+  border-radius: 0 !important;
+}
+/*authentication pages*/
+
+.authentication{
+  height: 100vh;
+  display: flex;
+  align-items: center;
+ justify-content: center;
+  background-image:  url(/src/images/foo.jpg);
+  background-size: cover;
+
+}
+.authentication-form{
+width: 400px;
+}
+.primary-button{
+  background-color: #002962;
+  border-color: #005555;
+  height: 50px;
+  width: 100%;
+  color: white;
+  font-size:  16px;
+}
+.anchor:hover{
+  text-decoration: underline;
+}
+
+.authentication .card-title{
+  font-size: 1.5rem;
+  font-weight: bold;
+  background-color: #ff002b;
+  color: white;
+  max-width: max-content;
+  padding: 7px 15px ;
+  margin-left: -40px;
+  border-bottom-left-radius: 10px;
+}
