@@ -1,25 +1,25 @@
 const mongoose = require("mongoose");
 
 const menuSchema = mongoose.Schema({
-    itemName: {
+    ItemName: {
         type: String,
         required: true,
     },
-    itemPrice: {
+    ItemPrice: {
         type: Number,
         required: true,
     },
-    itemQuantity: {
-        type: Number,
+    ItemDescription: {
+        type: String,
         required: true,
     },
-    itemImage: {
+    ItemImage: {
         type: String,
         required: true,
     },
     canteenId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'canteen'
+        ref: 'owner'
     }
 });
 

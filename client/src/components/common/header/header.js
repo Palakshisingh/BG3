@@ -3,6 +3,11 @@ import "./header.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import logo from './foob.png'
 const Header = ()=> {
+
+    const handleCart = () => {
+        window.location.href = "/cart"
+    }
+
     return (
         <div className="max-width">
             <div className="header">
@@ -38,6 +43,14 @@ const Header = ()=> {
                             Shreyas
                         </div>
                         <i className="fa-solid fa-angle-down"></i>
+                    </div>
+                    <div className="cart-box" onClick={handleCart}>
+                        <div className="cart-icon">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </div>
+                        <div className="cart-text">
+                            Cart
+                        </div>
                     </div>
                 </div>
             </div>

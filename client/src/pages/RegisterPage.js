@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { registerUser } from '../controllers/authCon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
-//import "./register.css";
-// bg from "./register-bg.png";
+
 const SignUp = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");

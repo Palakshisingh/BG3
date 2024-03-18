@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { registerUser } from '../controllers/authCon';
+import { registerOwner } from '../controllers/authCon';
 
 //import "./register.css";
 //import bg from "./register-bg.png";
@@ -18,11 +18,11 @@ const OwnerReg = () => {
     };
 
     try {
-      const response = await registerUser(registrationData);
+      const response = await registerOwner(registrationData);
       if (response.success === false) {
-        window.location.href = "/"; // Redirect to home page if registration fails
+        window.location.href = "http://localhost:3000/ownerR"; // Redirect to register page if registration fails
       } else {
-        window.location.href = "/home"; // Redirect to home page if registration is successful
+        window.location.href = "http://localhost:3000/ownerU"; // Redirect to home page if registration is successful
       }
     } catch (error) {
       console.error("Registration failed:", error);
@@ -53,7 +53,7 @@ const OwnerReg = () => {
             </div>
           </form>
           <div className='login-btn'>
-            <a href='/login'>Already have an account?</a>
+            <a href='/ownerL'>Already have an account?</a>
           </div>
         </div>
       </div>

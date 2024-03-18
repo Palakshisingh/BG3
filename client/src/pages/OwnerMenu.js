@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
+
 const OwnerPage = () => {
     const [ItemName, setItemName] = useState("");
     const [ItemPrice, setItemPrice] = useState("");
     const [ItemImage, setItemImage] = useState("");
-    const [ItemQuantity, setItemQuantity] = useState("");
+    const [ItemDescription, setItemDescription] = useState("");
+    const [token, setToken] = useState("");
+
+    useEffect(() => {
+        const getToken = () => {
+            const storedToken = localStorage.getItem('token');
+            if (storedToken) {
+                setToken(storedToken);
+            }
+        };
+        getToken();
+    }, []);
 
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
@@ -40,14 +52,15 @@ const OwnerPage = () => {
             const requestData = {
                 ItemName,
                 ItemPrice,
-                ItemQuantity,
+                ItemDescription,
                 ItemImage,
             };
 
-            const response = await fetch('http://localhost:8000/getownermenu', {
+            const response = await fetch('http://localhost:8000/menuUpload', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(requestData)
             });
@@ -59,13 +72,14 @@ const OwnerPage = () => {
             console.log('Canteen data submitted successfully');
             setItemName("");
             setItemImage("");
-            setItemQuantity("");
+            setItemDescription("");
             setItemPrice("");
 
         } catch (error) {
             console.error('Error:', error);
         }
     };
+
     return (
         <div>
             <form onSubmit={handleSubmit}>
@@ -90,9 +104,9 @@ const OwnerPage = () => {
                 <div className="item-quantity">
                     <input 
                         type="text" 
-                        placeholder="Enter Item Quantity"
-                        value={ItemQuantity}
-                        onChange={(event) => setItemQuantity(event.target.value)}
+                        placeholder="Enter Item Description"
+                        value={ItemDescription}
+                        onChange={(event) => setItemDescription(event.target.value)}
                         required
                     />
                 </div>
@@ -109,4 +123,5 @@ const OwnerPage = () => {
         </div>
     );
 };
+
 export default OwnerPage;

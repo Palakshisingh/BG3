@@ -1,86 +1,112 @@
-.main {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-  position: relative;
-  }
+@import url('https://fonts.googleapis.com/css2?family=Angkor&display=swap');
 
-  .background-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .register-box {
-    background-color: #ffffff;
-    border-radius: 8px;
-    height: auto;
-    width: 30%;
+* {
+    font-family: "Angkor", serif;
+}
+
+/* Ant Design override */
+input {
+    border-radius: 2px !important;
+    border: 1px solid rgba(128, 128, 128, 0.499) !important;
+    height: 40px !important;
+}
+
+input:focus {
+    outline: none;
+    box-shadow: none;
+    border: 1px solid gray;
+}
+
+label {
+    font-size: 16px;
+    color: black;
+}
+
+.ant-form-item {
+    margin: 10px;
+}
+
+/* Common styling */
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.normal-text {
+    font-size: 1rem;
+}
+
+.card {
+    box-shadow: 0 0 2px gray;
+    border-radius: 0 !important;
+}
+
+.authentication {
+    height: 100vh;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    padding: 20px;
-    z-index: 1;
-    margin-right: auto;
-  }
-  
-  .register-box h2 {
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .form-container {
-    margin-top: 20px;
-  }
-  
-  .input-uep {
-    margin-bottom: 15px;
-  }
-  
-  .prompt {
-    margin-bottom: 5px;
-  }
-  
-  input[type="text"],
-  input[type="password"] {
-    width: calc(100% - 20px); /* Adjust for padding */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .register-btn button,
-  .google-btn button {
+    background-image: url(./register-bg.png); /* You need to adjust the path to your image */
+    background-size: cover;
+}
+
+.authentication-form {
+    width: 400px;
+}
+
+.primary-button {
+    background-color: #002962;
+    border-color: #005555;
+    height: 50px;
     width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-bottom: 10px; /* Adjust for spacing */
-  }
-  
-  .register-btn button:hover,
-  .google-btn button:hover {
-    background-color: #0056b3;
-  }
-  
-  .login-btn {
-    margin-top: 10px;
-    text-align: center;
-  }
-  
-  .login-btn a {
-    text-decoration: none;
-    color: #007bff;
-    transition: color 0.3s ease;
-  }
-  
-  .login-btn a:hover {
-    color: #0056b3;
-  }
-  
+    color: white;
+    font-size: 16px;
+}
+
+.anchor:hover {
+    text-decoration: underline;
+}
+
+.authentication .card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    background-color: #ff002b;
+    color: white;
+    max-width: max-content;
+    padding: 7px 15px;
+    margin-left: -40px;
+    border-bottom-left-radius: 10px;
+}
+
+/* Additional styling for the registration form */
+.main {
+    /* Add any additional styles for the main container */
+}
+
+.register-box {
+    /* Add any additional styles for the register box */
+}
+
+.form-container {
+    /* Add any additional styles for the form container */
+}
+
+.input-uep {
+    /* Add any additional styles for the input wrapper */
+}
+
+.prompt {
+    /* Add any additional styles for the prompt */
+}
+
+.register-btn {
+    /* Add any additional styles for the register button */
+}
+
+.google-btn {
+    /* Add any additional styles for the Google button */
+}
+
+.login-btn {
+    /* Add any additional styles for the login button */
+}

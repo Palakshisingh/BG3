@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const canteenSchema = mongoose.Schema({
     canteenName: {
         type: String,
-        required: true,
+        required: false,
     },
     canteenImage: {
         type: String,
@@ -11,11 +11,15 @@ const canteenSchema = mongoose.Schema({
     },
     canteenDescription: {
         type: String,
-        requried: true,
+        required: false,
     },
     canteenLocation: {
         type: String,
-        requried: true,
+        requried: false,
+    },
+    canteenId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'owner',
     }
 });
 

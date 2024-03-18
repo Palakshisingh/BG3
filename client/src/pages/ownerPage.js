@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 const OwnerPage = () => {
     const [canteenName, setCanteenName] = useState("");
     const [canteenDescription, setCanteenDescription] = useState("");
     const [canteenLocation, setCanteenLocation] = useState("");
     const [canteenImage, setCanteenImage] = useState("");
+    const [token, setToken] = useState("");
+
+    useEffect(() => {
+        const getToken = () => {
+            const storedToken = localStorage.getItem('token');
+            if (storedToken) {
+                setToken(storedToken);
+            }
+        };
+        getToken();
+    }, []);
 
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
@@ -47,7 +58,8 @@ const OwnerPage = () => {
             const response = await fetch('http://localhost:8000/ownerPost', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(requestData)
             });
@@ -108,6 +120,7 @@ const OwnerPage = () => {
                 </div>
                 <button type="submit">Submit</button>
             </form>
+            <a href='/ownerM'>Upload Menu</a>
         </div>
     );
 };

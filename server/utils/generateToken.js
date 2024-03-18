@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken");
+require('dotenv').config();
+
 //generate token for user which is unique and set it in a cookie as a response.
 const generate = (userId,res) => {
     const token = jwt.sign({userId},process.env.JWT_SECRET,{

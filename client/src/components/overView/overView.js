@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './overView.css';
 
-
 const OverView = () => {
     const [canteens, setCanteens] = useState([]);
+
     useEffect(() => {
         console.log("useEffect triggered: fetching canteens...");
         fetchCanteens();
@@ -26,6 +26,11 @@ const OverView = () => {
         }
     };
 
+    const handleClick = (canteenId) => {
+        console.log("Canteen ID clicked:", canteenId);
+        window.location.href = `http://localhost:3000/getMenu/${canteenId}`;
+    }
+
     console.log("Rendering OverView component...");
 
     return (
@@ -35,7 +40,7 @@ const OverView = () => {
             </div>
             <div className='canteen-collections'>
                 {canteens.map(canteen => (
-                    <div className='canteen-cards' key={canteen._id}>
+                    <div className='canteen-cards' key={canteen._id} onClick={() => handleClick(canteen.canteenId)}>
                         <img src={canteen.canteenImage} alt={canteen.canteenName} className="canteen-image" />
 
                         <div className='canteen-name'>
