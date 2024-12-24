@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { registerOwner } from '../controllers/authCon';
 
-//import "./register.css";
-//import bg from "./register-bg.png";
 const OwnerReg = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -22,7 +20,7 @@ const OwnerReg = () => {
       if (response.success === false) {
         window.location.href = "http://localhost:3000/ownerR"; // Redirect to register page if registration fails
       } else {
-        window.location.href = "http://localhost:3000/ownerU"; // Redirect to home page if registration is successful
+        window.location.href = "http://localhost:3000/ownerL"; // Redirect to home page if registration is successful
       }
     } catch (error) {
       console.error("Registration failed:", error);

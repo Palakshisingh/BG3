@@ -1,7 +1,7 @@
-// import react from "reaact";
+
 import "./header.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import logo from './foob.png'
+import logo from './logo.png'
 const Header = ()=> {
 
     const handleCart = () => {

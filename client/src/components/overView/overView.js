@@ -36,7 +36,7 @@ const OverView = () => {
     return (
         <div className="max-width">
             <div className='title'>
-                Tired of the ABHORRENT mess food? Try FOOB!
+                Tired of the ABHORRENT mess food? Let us Kook.
             </div>
             <div className='canteen-collections'>
                 {canteens.map(canteen => (

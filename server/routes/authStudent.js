@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const passport = require('passport');
+const goth = require('../models/goth')
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 require('dotenv').config();
 
@@ -11,8 +12,8 @@ require('dotenv').config();
 //passport set up for google authentication 
 passport.use(new GoogleStrategy({
     //client crendentials ......
-    clientID: '472353109993-gjg126553g4he0fe7gs5ajepuoqpekv4.apps.googleusercontent.com',
-    clientSecret: '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',
+    clientID: '472353109993-bvebi129jggs6rbcmfru3mel9ufnrknf.apps.googleusercontent.com',
+    clientSecret: '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',
     callbackURL: '/auth/google/callback'
 
 }, async function(accessToken, refreshToken, profile, done) {
@@ -59,10 +60,10 @@ router.post('/register', async (req, res) => {
 
     try {
         //extract the request recieved from frontend into following variables.
-        const { username, email, password } = req.body;
+        const { userName, email, password } = req.body;
 
         // Checks if username, email and password are provided and if they are unique
-        if (!username || !email || !password) {
+        if (!userName || !email || !password) {
             return res.status(400).json({ error: 'Username, email, and password are required' });
         }
 
@@ -76,7 +77,7 @@ router.post('/register', async (req, res) => {
         //new - hash the password and store in db
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({
-            username,
+            userName,
             email,
             password: hashedPassword
         });

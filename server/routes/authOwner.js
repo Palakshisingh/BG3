@@ -32,11 +32,7 @@ router.post('/registerOwner', async (req, res) => {
             password: hashedPassword
         });
         await newOwner.save();
-
-        // generate token and send through response
-        const token = jwt.sign({ ownerId: owner._id }, process.env.JWT_SECRET, { expiresIn: '5d' });
-        res.setHeader('Authorization', 'Bearer ' + token);
-        return res.status(201).json({ token });
+        return res.status(200).json({message:"Owner Registered"});
     } 
 
     catch (error) {
@@ -50,19 +46,18 @@ router.post('/registerOwner', async (req, res) => {
 // Login route for local authentication
 router.post('/loginOwner', async (req, res) => {
     try {
-        //recieved req has email and password - username caused issues with db.
         const { email, password } = req.body;
 
         if (!email || !password) {
             return res.status(400).json({ error: 'Email and password are required' });
         }
+
         const owner = await Owner.findOne({ email });
 
         if (!owner) {
-            return res.status(401).json({ error: 'Invalid email or password' });//401-unauth
+            return res.status(401).json({ error: 'Invalid email or password' });
         }
 
-        //if email exists - compare passwords
         const passwordMatch = await bcrypt.compare(password, owner.password);
         if (!passwordMatch) {
             return res.status(401).json({ error: 'Invalid email or password' });
@@ -71,12 +66,11 @@ router.post('/loginOwner', async (req, res) => {
         const token = jwt.sign({ ownerId: owner._id }, process.env.JWT_SECRET, { expiresIn: '5d' });
         res.setHeader('Authorization', 'Bearer ' + token);
         return res.status(200).json({ token });
-    } 
-    catch (error) {
+    } catch (error) {
         console.error('Error in login route:', error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
-
 });
+
 
 module.exports = router;

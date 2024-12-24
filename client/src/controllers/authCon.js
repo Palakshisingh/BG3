@@ -20,6 +20,18 @@ export const registerUser = async (registrationData) => {
   }
 };
 
+export const loginUser = async (loginData) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/login`, loginData);
+    console.log("response:", response.data);
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('Error during user Login:', error);
+    return { success: false, error: 'Login failed' };
+  }
+};
+
+
 export const registerOwner = async (registrationData) => {
   try {
     const response = await axios.post(`${BASE_URL}/registerOwner`, registrationData);
